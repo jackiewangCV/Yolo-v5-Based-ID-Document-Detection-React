@@ -1,6 +1,6 @@
 {
   "name": "id-detection-ort",
-  "homepage": "https://jackiewangCV.github.io/ID-document-capture-ReactJS",
+  "homepage": ".",
   "version": "1.0.0",
   "dependencies": {
     "@techstark/opencv-js": "4.5.5-release.2",
