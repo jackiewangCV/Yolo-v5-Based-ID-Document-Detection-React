@@ -1,6 +1,6 @@
 {
   "name": "id-detection-ort",
-  "homepage": "https://github.com/kby-ai",
+  "homepage": "https://jackiewangCV.github.io/ID-document-capture-ReactJS",
   "version": "1.0.0",
   "dependencies": {
     "onnxruntime-web": "^1.14.0",
@@ -38,15 +38,15 @@
   },
   "author": {
     "name": "Jackie",
-    "url": "https://github.com/kby-ai"
+    "url": "https://github.com/jackiewangCV/ID-document-capture-ReactJS"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Hyuto/yolov5-onnxruntime-web.git"
+    "url": "git+git@github.com:jackiewangCV/ID-document-capture-ReactJS.git"
   },
   "bugs": {
-    "url": "https://github.com/Hyuto/yolov5-onnxruntime-web/issues"
+    "url": "https://github.com/jackiewangCV/ID-document-capture-ReactJS/issues"
   },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
