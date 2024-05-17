@@ -1,4 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
+import cv from "@techstark/opencv-js";
 // import Webcam from "react-webcam";
 import { Tensor, InferenceSession } from "onnxruntime-web";
 import Loader from "./components/loader";

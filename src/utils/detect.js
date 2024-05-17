@@ -1,4 +1,5 @@
 import { Tensor } from "onnxruntime-web";
+import cv from "@techstark/opencv-js";
 import { renderBoxes } from "./renderBox";
 
 /**
