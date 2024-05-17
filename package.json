@@ -1,0 +1,56 @@
+{
+  "name": "id-detection-ort",
+  "homepage": "https://github.com/kby-ai",
+  "version": "1.0.0",
+  "dependencies": {
+    "onnxruntime-web": "^1.14.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "react-webcam": "^7.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "deploy": "gh-pages -d build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "globals": {
+      "cv": true
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "author": {
+    "name": "Jackie",
+    "url": "https://github.com/kby-ai"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hyuto/yolov5-onnxruntime-web.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Hyuto/yolov5-onnxruntime-web/issues"
+  },
+  "devDependencies": {
+    "@craco/craco": "^7.1.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "gh-pages": "^5.0.0"
+  }
+}
