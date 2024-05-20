@@ -8,13 +8,13 @@ import { download } from "./utils/download";
 import "./style/App.css";
 
 function CameraIDCapture() {
+  // const [img, setImg] = useState(null);
+  // const webcamRef = useRef(null);
+
+
   const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState({
-    text: "Loading OpenCV.js",
-    progress: null,
-  });
+  const [loading, setLoading] = useState({ text: "Loading OpenCV.js", progress: null });
   const [image, setImage] = useState(null);
-  const [screenshot, setScreenshot] = useState(null);
   const inputImage = useRef(null);
   const imageRef = useRef(null);
   const canvasRef = useRef(null);
@@ -22,22 +22,30 @@ function CameraIDCapture() {
   let streaming = null;
   let processVideoInterval;
 
-  const modelName = "id_detect.onnx";
+  // configs
+  const modelName = "id-1v1.onnx";
   const modelInputShape = [1, 3, 640, 640];
   const topk = 100;
   const iouThreshold = 0.45;
   const confThreshold = 0.2;
   const classThreshold = 0.2;
 
+  // const videoConstraints = {
+  //   width: 720,
+  //   height: 420,
+  //   aspectRatio: 0.6666666667,
+  //   facingMode: "user",
+  // };
+
   const onClickVideoStream = () => {
     let video = document.getElementById("vid");
     let canvas = document.getElementById("canvas");
-    let timeElement = document.getElementById("time");
-    let buttonWebcamElement = document.getElementById("btn-webcam");
-
+    let time_element = document.getElementById("time");
+    let button_webcam_element = document.getElementById("btn-webcam");
+    
     if (streaming == null) {
       streaming = "camera";
-
+    
       video.style.display = "block";
       canvas.style.display = "block";
 
@@ -55,68 +63,52 @@ function CameraIDCapture() {
           async function processVideo() {
             try {
               if (!streaming) {
+                // clean and stop.
                 src.delete();
                 return;
               }
+              video.style.display = "block";
               let start = Date.now();
               cap.read(src);
-
-              const result = await detectImage(
-                src,
-                canvas,
-                session,
-                topk,
-                iouThreshold,
-                confThreshold,
-                classThreshold,
-                modelInputShape,
-                true
-              );
-
-              if (result && result.length > 0) {
-                const screenshotCanvas = document.createElement("canvas");
-                screenshotCanvas.width = video.videoWidth;
-                screenshotCanvas.height = video.videoHeight;
-                const screenshotCtx = screenshotCanvas.getContext("2d");
-                screenshotCtx.drawImage(
-                  video,
-                  0,
-                  0,
-                  screenshotCanvas.width,
-                  screenshotCanvas.height
-                );
-                const screenshotData = screenshotCanvas.toDataURL("image/png");
-                console.log("result:::", result);
-                setScreenshot(screenshotData);
-              }
-
+              detectImage(src, canvas, session, topk, iouThreshold, confThreshold, classThreshold, modelInputShape, true);
               let end = Date.now();
               let time = end - start;
-              timeElement.innerHTML = "Time: " + time + "ms";
+              time_element.innerHTML = "Time: " + time + "ms";
+
             } catch (err) {
               alert(err);
             }
           }
 
-          processVideoInterval = setInterval(processVideo, 100); // Adjust interval to reduce CPU load
+          processVideoInterval = setInterval(processVideo, 10);
         })
         .catch(function (err) {
           console.log("An error occurred! " + err);
         });
-    } else {
+    }
+    else {
       streaming = null;
+      // close webcam
       video.style.display = "none";
       clearInterval(processVideoInterval);
       video.srcObject.getTracks().forEach(function (track) {
         track.stop();
       });
-      timeElement.innerHTML = "Time: 0ms";
+      // clean time
+      time_element.innerHTML = "Time: 0ms";
     }
 
-    buttonWebcamElement.innerHTML =
-      (streaming === "camera" ? "Close" : "Open") + " Webcam";
+    button_webcam_element.innerHTML = (streaming === "camera" ? "Close" : "Open") + " Webcam";
+
   };
 
+
+  // const capture = useCallback(() => {
+  //   const imageSrc = webcamRef.current.getScreenshot();
+  //   setImg(imageSrc);
+  // }, [webcamRef]);
+
+  // wait until opencv.js and detection model initialized
   cv["onRuntimeInitialized"] = async () => {
     const baseModelURL = `${process.env.PUBLIC_URL}/model`;
 
@@ -139,10 +131,7 @@ function CameraIDCapture() {
       new Float32Array(modelInputShape.reduce((a, b) => a * b)),
       modelInputShape
     );
-    const config = new Tensor(
-      "float32",
-      new Float32Array([topk, iouThreshold, confThreshold])
-    );
+    const config = new Tensor("float32", new Float32Array([topk, iouThreshold, confThreshold]));
     const { output0 } = await model.run({ images: tensor });
     await nms.run({ detection: output0, config: config });
 
@@ -154,63 +143,49 @@ function CameraIDCapture() {
     <div className="App">
       {loading && (
         <Loader>
-          {loading.progress
-            ? `${loading.text} - ${loading.progress}%`
-            : loading.text}
+          {loading.progress ? `${loading.text} - ${loading.progress}%` : loading.text}
         </Loader>
       )}
 
       <div className="header">
-        <h1>ID Document Capture Web App</h1>
+        <h1>ID Documment Capture Web App</h1>
         <h4 id="time">0</h4>
         <p>
           ID document capture application live on browser powered by{" "}
-          <code>onnxruntime-web</code>
+          <code>ML engine</code>
         </p>
         <p>
-          Serving : <code className="code">{modelName}</code>
+          {/* Serving : <code className="code">{modelName}</code> */}
+          Serving : <code className="code">KBY-AI</code>
         </p>
       </div>
 
       <div className="content">
-        {screenshot ? (
-          <img src={screenshot} alt="Screenshot" />
-        ) : (
-          <>
-            <img
-              src="#"
-              alt=""
-              style={{ display: image ? "block" : "none" }}
-              ref={imageRef}
-              onLoad={() => {
-                detectImage(
-                  imageRef.current,
-                  canvasRef.current,
-                  session,
-                  topk,
-                  iouThreshold,
-                  confThreshold,
-                  classThreshold,
-                  modelInputShape
-                );
-              }}
-            />
-            <video
-              id="vid"
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              style={{ inlineSize: "fit-content" }}
-            />
-            <canvas
-              id="canvas"
-              width={modelInputShape[2]}
-              height={modelInputShape[3]}
-              ref={canvasRef}
-            />
-          </>
-        )}
+        <img
+          src="#"
+          alt=""
+          style={{ display: image ? "block" : "none" }}
+          ref={imageRef}
+          onLoad={() => {
+            detectImage(
+              imageRef.current,
+              canvasRef.current,
+              session,
+              topk,
+              iouThreshold,
+              confThreshold,
+              classThreshold,
+              modelInputShape
+            );
+          }}
+        />
+        <video id="vid" ref={videoRef} autoPlay playsInline muted style={{ inlineSize: "fit-content" }} />
+        <canvas
+          id="canvas"
+          width={modelInputShape[2]}
+          height={modelInputShape[3]}
+          ref={canvasRef}
+        />
       </div>
 
       <input
@@ -219,17 +194,18 @@ function CameraIDCapture() {
         accept="image/*"
         style={{ display: "none" }}
         onChange={(e) => {
+          // handle next image to detect
           if (image) {
             URL.revokeObjectURL(image);
             setImage(null);
           }
 
-          const url = URL.createObjectURL(e.target.files[0]);
-          imageRef.current.src = url;
+          const url = URL.createObjectURL(e.target.files[0]); // create image url
+          imageRef.current.src = url; // set image source
           setImage(url);
         }}
       />
-
+      
       <div className="btn-container">
         <button
           onClick={() => {
@@ -239,19 +215,16 @@ function CameraIDCapture() {
           Open local image
         </button>
         {image && (
+          /* show close btn when there is image */
           <button
             onClick={() => {
               inputImage.current.value = "";
               imageRef.current.src = "#";
               URL.revokeObjectURL(image);
               setImage(null);
+              //clear canvas
               const ctx = canvasRef.current.getContext("2d");
-              ctx.clearRect(
-                0,
-                0,
-                canvasRef.current.width,
-                canvasRef.current.height
-              );
+              ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
             }}
           >
             Close image
