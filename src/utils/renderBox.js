@@ -30,7 +30,10 @@ export const renderBoxes = (canvas, boxes) => {
     ctx.fillRect(x1, y1, width, height);
     // draw border box
     ctx.strokeStyle = color;
-    ctx.lineWidth = Math.max(Math.min(ctx.canvas.width, ctx.canvas.height) / 200, 2.5);
+    ctx.lineWidth = Math.max(
+      Math.min(ctx.canvas.width, ctx.canvas.height) / 200,
+      2.5
+    );
     ctx.strokeRect(x1, y1, width, height);
 
     // draw the label background.
@@ -47,7 +50,11 @@ export const renderBoxes = (canvas, boxes) => {
 
     // Draw labels
     ctx.fillStyle = "#ffffff";
-    ctx.fillText(klass + " - " + score + "%", x1 - 1, yText < 0 ? 1 : yText + 1);
+    ctx.fillText(
+      klass + " - " + score + "%",
+      x1 - 1,
+      yText < 0 ? 1 : yText + 1
+    );
   });
 };
 
@@ -84,9 +91,11 @@ class Colors {
   static hexToRgba = (hex, alpha) => {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
-      ? `rgba(${[parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)].join(
-          ", "
-        )}, ${alpha})`
+      ? `rgba(${[
+          parseInt(result[1], 16),
+          parseInt(result[2], 16),
+          parseInt(result[3], 16),
+        ].join(", ")}, ${alpha})`
       : null;
   };
 }
